@@ -1,0 +1,35 @@
+GET http://localhost:12345/rest/session
+Accept: application/json
+
+###
+
+GET http://localhost:12345/rest/files
+Accept: application/json
+
+###
+
+GET http://localhost:12345/rest/files/test-2
+Accept: application/json
+
+###
+
+POST http://localhost:12345/rest/download
+Accept: application/json
+
+{
+"id":"test-request-10",
+"url":"http://localhost:2222",
+"session":"test"
+}
+
+###
+
+GET http://localhost:12345/rest/file/test/test-request-1
+Accept: application/json
+
+###
+
+GET http://localhost:12345/rest/diff/test-2/test-request-1/test/test-request-1
+Accept: application/json
+
+###

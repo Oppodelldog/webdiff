@@ -1,0 +1,13 @@
+Version = "1"
+
+[[command]]
+name = "some-nginx"
+image = "nginx"
+removeContainer = true
+isDetached = true
+volumes = [
+    "/home/nils/go/src/gitlab/Oppodelldog/webdiff/.droxy/testfiles:/usr/share/nginx/html"
+]
+ports = [
+    "2222:80"
+]

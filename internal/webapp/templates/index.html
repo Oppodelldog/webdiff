@@ -9,6 +9,7 @@
     <link href="/webapp/assets/css/app.css" rel="stylesheet">
     <script src="/webapp/assets/bootstrap-5.1.3-dist/js/bootstrap.bundle.js"></script>
     <script src="/webapp/assets/vue/vue.js"></script>
+    <script src="/webapp/assets/vue/vue-router.js"></script>
 
 </head>
 <body>
@@ -19,49 +20,27 @@
             <div class="col">
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="#">webdiff</a>
+                        <router-link class="navbar-brand" to='/'>webdiff</router-link>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <router-link to="/diff" class="nav-link active">Diff</router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/download" class="nav-link active">Download</router-link>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </nav>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-2">
-                <select v-model="selectedSessionA" @change="loadFilesA()" class="form-select"
-                        aria-label="Choose a session to load file for selection on the left side">
-                    <option disabled value="">Choose a session</option>
-                    <option v-for="session in sessions" :value="session">{{session}}</option>
-                </select>
-                <select class="form-select" multiple
-                        aria-label="select files to diff with files selected on the right side" v-model="selectedFilesA"
-                        @change="tryDiff()">
-                    <option v-for="file in filesA" :value="file.file">{{file.file}}</option>
-                </select>
-            </div>
-            <div class="col-sm-8">
-                <div v-for="d in diffContents">
-                    <span class="badge bg-dark">
-                        {{d.session_a}}/{{d.id_a}}
-                    </span>
-                    <i class="bi bi-file-diff-fill"></i>
-                    <span class="badge bg-dark">
-                        {{d.session_b}}/{{d.id_b}}
-                    </span>
-                    <pre>{{d.diff}}</pre>
-                </div>
-            </div>
-            <div class="col-sm-2">
-                <select v-model="selectedSessionB" @change="loadFilesB()" class="form-select"
-                        aria-label="Choose a session to load file for selection on the right side">
-                    <option disabled value="">Choose a session</option>
-                    <option v-for="session in sessions" :value="session">{{session}}</option>
-                </select>
-                <select class="form-select" multiple
-                        aria-label="select files to diff with files selected on the left side" v-model="selectedFilesB"
-                        @change="tryDiff()">
-                    <option v-for="file in filesB" :value="file.file">{{file.file}}</option>
-                </select>
-            </div>
-        </div>
+        <router-view></router-view>
     </div>
 </div>
 

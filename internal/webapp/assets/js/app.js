@@ -8,7 +8,7 @@ let app = Vue.createApp({
             selectedSessionB: "",
             selectedFilesA: [],
             selectedFilesB: [],
-            diffContents: ["select files to diff"]
+            diffContents: []
         }
     },
     methods: {
@@ -42,7 +42,7 @@ let app = Vue.createApp({
                 const fileB = this.selectedFilesB[i];
 
                 const diffResult = await getDiff(sessionA, fileA, sessionB, fileB)
-                this.diffContents.push(diffResult.diff)
+                this.diffContents.push(diffResult)
             }
         }
     },

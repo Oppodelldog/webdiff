@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"log"
 	"net/http"
 	"webdiff/internal/files"
 )
@@ -27,6 +28,7 @@ func FilesBySessionHandler() httprouter.Handle {
 
 		fileList, err := files.Files(name)
 		if err != nil {
+			log.Println(err)
 			http.Error(writer, fmt.Sprintf("cannot read files"), http.StatusInternalServerError)
 
 			return
@@ -36,12 +38,13 @@ func FilesBySessionHandler() httprouter.Handle {
 	}
 }
 
+type FileEntry struct {
+	File    string `json:"file"`
+	Session string `json:"session"`
+}
+type FileEntries []FileEntry
+
 func writeFilesResponse(writer http.ResponseWriter, fileList files.FileEntries) {
-	type FileEntries []files.FileEntry
-	type FileEntry struct {
-		File    string `json:"file"`
-		Session string `json:"session"`
-	}
 
 	writer.Header().Set("Content-Type", "application/json")
 
@@ -49,6 +52,15 @@ func writeFilesResponse(writer http.ResponseWriter, fileList files.FileEntries) 
 		struct {
 			Files FileEntries `json:"files"`
 		}{
-			Files: FileEntries(fileList),
+			Files: adoptList(fileList),
 		})
+}
+
+func adoptList(list files.FileEntries) FileEntries {
+	var resList FileEntries
+	for _, entry := range list {
+		resList = append(resList, FileEntry(entry))
+	}
+
+	return resList
 }

@@ -4,18 +4,11 @@ import (
 	"github.com/guiferpa/gody/v2"
 	"github.com/guiferpa/gody/v2/rule"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
 	"webdiff/internal/download"
 )
 
-func StartApi(downloads chan<- download.Request) error {
-
-	return http.ListenAndServe(":12345", Router(downloads))
-}
-
-func Router(downloads chan<- download.Request) http.Handler {
+func Router(router *httprouter.Router, downloads chan<- download.Request) {
 	var (
-		router    = httprouter.New()
 		validator = mustCreateValidator()
 	)
 
@@ -26,7 +19,6 @@ func Router(downloads chan<- download.Request) http.Handler {
 	router.GET("/rest/diff/:sessionA/:idA/:sessionB/:idB", DiffHandler())
 	router.POST("/rest/download", downloadHandler(validator, downloads))
 
-	return router
 }
 
 func mustCreateValidator() *gody.Validator {

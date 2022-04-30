@@ -7,6 +7,8 @@ import (
 	"webdiff/internal/config"
 )
 
+const archiveSubFolder = "downloaded"
+
 type ArchivedFile struct {
 	Id      string
 	Session string
@@ -28,7 +30,7 @@ func File(session, id string) (*ArchivedFile, error) {
 }
 
 func DownloadedFilePath(session, id string) string {
-	return path.Join(config.DataDir(), session, "downloaded", id)
+	return path.Join(config.DataDir(), session, archiveSubFolder, id)
 }
 
 func StatusFilePath(session, id string) string {

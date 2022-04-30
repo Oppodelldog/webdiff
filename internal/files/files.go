@@ -2,10 +2,8 @@ package files
 
 import (
 	"fmt"
-	"io/fs"
+	"os"
 	"path"
-	"path/filepath"
-	"strings"
 	"webdiff/internal/config"
 )
 
@@ -21,34 +19,26 @@ func Files(folder string) (FileEntries, error) {
 		files   FileEntries
 	)
 
-	if len(folder) > 0 {
-		rootDir = path.Join(rootDir, folder)
-	}
-
-	err := filepath.Walk(rootDir, func(p string, info fs.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if info.IsDir() {
-			return nil
-		}
-
-		if strings.Contains(info.Name(), ".response.json") {
-			return nil
-		}
-
-		fileDir := filepath.Base(filepath.Dir(p))
-		files = append(files, FileEntry{
-			File:    info.Name(),
-			Session: fileDir,
-		})
-
-		return nil
-	})
-
+	sessionDirs, err := os.ReadDir(rootDir)
 	if err != nil {
-		return nil, fmt.Errorf("cannot read files: %w", err)
+		return nil, fmt.Errorf("cannot read session dirs: %w", err)
+	}
+	for _, sessionDir := range sessionDirs {
+		if len(folder) > 0 && sessionDir.Name() == folder {
+			continue
+		}
+
+		downloadFiles, err := os.ReadDir(path.Join(rootDir, sessionDir.Name(), archiveSubFolder))
+		if err != nil {
+			continue
+		}
+
+		for _, file := range downloadFiles {
+			files = append(files, FileEntry{
+				File:    file.Name(),
+				Session: sessionDir.Name(),
+			})
+		}
 	}
 
 	return files, nil

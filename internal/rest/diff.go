@@ -6,9 +6,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	"path"
-	"webdiff/internal/config"
 	"webdiff/internal/diff"
+	"webdiff/internal/files"
 )
 
 func DiffHandler() httprouter.Handle {
@@ -18,8 +17,8 @@ func DiffHandler() httprouter.Handle {
 			sessionB  = sanitizeFilename(params.ByName("sessionB"))
 			idA       = sanitizeFilename(params.ByName("idA"))
 			idB       = sanitizeFilename(params.ByName("idB"))
-			filePathA = path.Join(config.DataDir(), sessionA, idA)
-			filePathB = path.Join(config.DataDir(), sessionB, idB)
+			filePathA = files.DownloadedFilePath(sessionA, idA)
+			filePathB = files.DownloadedFilePath(sessionB, idB)
 		)
 
 		res, err := diff.Diff(filePathA, filePathB)

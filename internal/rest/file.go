@@ -11,11 +11,11 @@ import (
 func FileHandler() httprouter.Handle {
 	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		var (
-			file    = sanitizeFilename(params.ByName("file"))
+			id      = sanitizeFilename(params.ByName("id"))
 			session = sanitizeFilename(params.ByName("session"))
 		)
 
-		archivedFile, err := files.File(session, file)
+		archivedFile, err := files.File(session, id)
 		if err != nil {
 			http.Error(writer, fmt.Sprintf("cannot read files"), http.StatusInternalServerError)
 
@@ -23,7 +23,7 @@ func FileHandler() httprouter.Handle {
 		}
 
 		type ArchivedFile struct {
-			Name    string `json:"name"`
+			Id      string `json:"name"`
 			Session string `json:"session"`
 			Content []byte `json:"content"`
 		}

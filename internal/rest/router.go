@@ -22,8 +22,8 @@ func Router(downloads chan<- download.Request) http.Handler {
 	router.GET("/rest/session", SessionHandler())
 	router.GET("/rest/files/", AllFilesHandler())
 	router.GET("/rest/files/:session", FilesBySessionHandler())
-	router.GET("/rest/file/:session/:file", FileHandler())
-	router.GET("/rest/diff/:sessionA/:fileA/:sessionB/:fileB", DiffHandler())
+	router.GET("/rest/file/:session/:id", FileHandler())
+	router.GET("/rest/diff/:sessionA/:idA/:sessionB/:idB", DiffHandler())
 	router.POST("/rest/download", downloadHandler(validator, downloads))
 
 	return router

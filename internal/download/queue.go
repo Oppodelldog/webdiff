@@ -2,8 +2,7 @@ package download
 
 import (
 	"log"
-	"path"
-	"webdiff/internal/config"
+	"webdiff/internal/files"
 )
 
 type Request struct {
@@ -15,13 +14,13 @@ type Request struct {
 
 func StartQueue() chan<- Request {
 	var requests = make(chan Request)
-	var dataDir = config.DataDir()
 
 	go func() {
 		for request := range requests {
 			go func(request Request) {
-				var filename = path.Join(dataDir, request.Session, request.Id)
-				err := Page(request.Url, filename)
+				var filename = files.DownloadedFilePath(request.Session, request.Id)
+				var statusFile = files.StatusFilePath(request.Session, request.Id)
+				err := Page(request.Token, request.Url, filename, statusFile)
 				if err != nil {
 					log.Printf("error downloading url='%s', session='%s': %v", request.Url, filename, err)
 				}

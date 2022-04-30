@@ -6,13 +6,33 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"time"
 )
 
-func Page(uri, targetFile string) error {
+type pageDownloadStatus struct {
+	Token    string
+	DateTime int64
+	Download string
+	Response pageDownloadResponse
+	Request  pageDownloadRequest
+}
+type pageDownloadResponse struct {
+	StatusCode       int
+	Status           string
+	Header           http.Header
+	ContentLength    int64
+	TransferEncoding []string
+}
+type pageDownloadRequest struct {
+	Method string
+	URL    *url.URL
+	Header http.Header
+}
 
+func Page(token, uri, targetFile, statusFile string) error {
 	err := ensureTargetDir(targetFile)
 	if err != nil {
 		return fmt.Errorf("error creating target dir for file '%s': %w", targetFile, err)
@@ -43,7 +63,6 @@ func Page(uri, targetFile string) error {
 		return fmt.Errorf("error writing page '%s' to file '%s': %w", uri, targetFile, err)
 	}
 
-	var statusFile = fmt.Sprintf("%s.response.json", targetFile)
 	f, err := os.OpenFile(statusFile, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0655)
 	if err != nil {
 		return fmt.Errorf("error creating page '%s' status to file '%s': %w", uri, statusFile, err)
@@ -56,20 +75,22 @@ func Page(uri, targetFile string) error {
 		}
 	}()
 
-	err = json.NewEncoder(f).Encode(struct {
-		StatusCode       int
-		Status           string
-		Header           http.Header
-		ContentLength    int64
-		TransferEncoding []string
-		DateTime         int64
-	}{
-		DateTime:         time.Now().UnixNano(),
-		StatusCode:       resp.StatusCode,
-		Status:           resp.Status,
-		Header:           resp.Header,
-		ContentLength:    resp.ContentLength,
-		TransferEncoding: resp.TransferEncoding,
+	err = json.NewEncoder(f).Encode(pageDownloadStatus{
+		Token:    token,
+		DateTime: time.Now().UnixNano(),
+		Download: filepath.Base(targetFile),
+		Response: pageDownloadResponse{
+			StatusCode:       resp.StatusCode,
+			Status:           resp.Status,
+			Header:           resp.Header,
+			ContentLength:    resp.ContentLength,
+			TransferEncoding: resp.TransferEncoding,
+		},
+		Request: pageDownloadRequest{
+			Method: resp.Request.Method,
+			URL:    resp.Request.URL,
+			Header: resp.Request.Header,
+		},
 	})
 	if err != nil {
 		return fmt.Errorf("error writing page '%s' status to file '%s': %w", uri, statusFile, err)

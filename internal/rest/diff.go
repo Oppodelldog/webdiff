@@ -16,10 +16,10 @@ func DiffHandler() httprouter.Handle {
 		var (
 			sessionA  = sanitizeFilename(params.ByName("sessionA"))
 			sessionB  = sanitizeFilename(params.ByName("sessionB"))
-			fileA     = sanitizeFilename(params.ByName("fileA"))
-			fileB     = sanitizeFilename(params.ByName("fileB"))
-			filePathA = path.Join(config.DataDir(), sessionA, fileA)
-			filePathB = path.Join(config.DataDir(), sessionB, fileB)
+			idA       = sanitizeFilename(params.ByName("idA"))
+			idB       = sanitizeFilename(params.ByName("idB"))
+			filePathA = path.Join(config.DataDir(), sessionA, idA)
+			filePathB = path.Join(config.DataDir(), sessionB, idB)
 		)
 
 		res, err := diff.Diff(filePathA, filePathB)
@@ -30,21 +30,21 @@ func DiffHandler() httprouter.Handle {
 		}
 
 		err = json.NewEncoder(writer).Encode(struct {
-			FileA    string `json:"file_a"`
+			IdA      string `json:"id_a"`
 			SessionA string `json:"session_a"`
 			Diff     string `json:"diff"`
-			FileB    string `json:"file_b"`
+			IdB      string `json:"id_b"`
 			SessionB string `json:"session_b"`
 		}{
-			FileA:    fileA,
+			IdA:      idA,
 			SessionA: sessionA,
-			FileB:    fileB,
+			IdB:      idB,
 			SessionB: sessionB,
 			Diff:     res,
 		})
 
 		if err != nil {
-			log.Printf("error sending diff (%s,%s,%s,%s) response to client: %v", sessionA, fileA, sessionB, fileB, err)
+			log.Printf("error sending diff (%s,%s,%s,%s) response to client: %v", sessionA, idA, sessionB, idB, err)
 		}
 	}
 }

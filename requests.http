@@ -1,33 +1,46 @@
+### list sessions
 GET http://localhost:12345/rest/session
 Accept: application/json
 
-###
+### list files
 
 GET http://localhost:12345/rest/files
 Accept: application/json
 
-###
+### list session files
 
 GET http://localhost:12345/rest/files/test-2
 Accept: application/json
 
-###
+### enqueue download
 
 POST http://localhost:12345/rest/download
 Accept: application/json
 
 {
-"id":"test-request-10",
-"url":"http://localhost:2222",
-"session":"test"
+"id":"test-request-1",
+"url":"http://localhost:2222/index-1.html",
+"session":"test-1"
 }
 
-###
+### enqueue download
 
-GET http://localhost:12345/rest/file/test/test-request-1
+POST http://localhost:12345/rest/download
 Accept: application/json
 
-###
+{
+"id":"test-request-1",
+"url":"http://localhost:2222/index-2.html",
+"session":"test-2"
+}
+
+
+### get downloaded file
+
+GET http://localhost:12345/rest/file/test-1/test-request-1
+Accept: application/json
+
+### diff 2 downloaded files
 
 GET http://localhost:12345/rest/diff/test-2/test-request-1/test/test-request-1
 Accept: application/json

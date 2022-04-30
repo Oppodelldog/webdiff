@@ -2,3 +2,5 @@
 .idea
 .droxy/droxy.log
 .droxy/some-nginx
+.droxy/test-1
+.droxy/test-2

@@ -24,7 +24,11 @@ func Files(folder string) (FileEntries, error) {
 		return nil, fmt.Errorf("cannot read session dirs: %w", err)
 	}
 	for _, sessionDir := range sessionDirs {
-		if len(folder) > 0 && sessionDir.Name() == folder {
+		if !sessionDir.IsDir() {
+			continue
+		}
+
+		if len(folder) > 0 && sessionDir.Name() != folder {
 			continue
 		}
 

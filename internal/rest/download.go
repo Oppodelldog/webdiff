@@ -12,7 +12,7 @@ import (
 )
 
 type DownloadRequest struct {
-	Id      string `json:"id" validate:"not_empty"`
+	Id      string `json:"id"`
 	Url     string `json:"url" validate:"not_empty"`
 	Session string `json:"session" validate:"not_empty"`
 }

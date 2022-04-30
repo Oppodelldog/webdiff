@@ -77,12 +77,14 @@ app.component('diff', {
 
             const data = await getFiles(this.selectedSessionA)
             this.filesA = data.files;
+            this.selectedFilesA=[];
         },
         async loadFilesB() {
             if (this.selectedSessionB.length === 0) return;
 
             const data = await getFiles(this.selectedSessionB)
             this.filesB = data.files;
+            this.selectedFilesB=[];
         },
         async tryDiff() {
             if (this.selectedSessionA.length === 0) return;

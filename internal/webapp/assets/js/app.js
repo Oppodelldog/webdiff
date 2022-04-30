@@ -1,4 +1,4 @@
-const Home = {template: '<div><h6>Home</h6></div>'}
+const Home = {template: '<home/>'}
 const Diff = {template: '<diff/>'}
 const Download = {template: '<download/>'}
 
@@ -17,6 +17,7 @@ const app = Vue.createApp({});
 
 app.component('diff', componentDiff);
 app.component('download', componentDownload);
+app.component('home', componentHome);
 
 app.use(router)
 app.mount('#app')

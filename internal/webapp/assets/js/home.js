@@ -1,7 +1,7 @@
-const componentDownload = {
+const componentHome = {
     template: `
       <div class="row">
-      <h6>Download</h6>
+      <h6>Home</h6>
         </div>`,
     data() {
         return {}

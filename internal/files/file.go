@@ -3,8 +3,6 @@ package files
 import (
 	"fmt"
 	"io/ioutil"
-	"path"
-	"webdiff/internal/config"
 )
 
 const archiveSubFolder = "downloaded"
@@ -27,16 +25,4 @@ func File(session, id string) (*ArchivedFile, error) {
 		Session: session,
 		Content: content,
 	}, nil
-}
-
-func DownloadedFilePath(session, id string) string {
-	return path.Join(SessionPath(session), archiveSubFolder, id)
-}
-
-func StatusFilePath(session, id string) string {
-	return path.Join(SessionPath(session), fmt.Sprintf("%s.json", id))
-}
-
-func SessionPath(session string) string {
-	return path.Join(config.DataDir(), session)
 }

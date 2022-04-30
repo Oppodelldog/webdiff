@@ -16,14 +16,10 @@ async function getDiff(sessionA, idA, sessionB, idB) {
 }
 
 async function get(url) {
-    try {
-        const res = await fetch(url);
-        if (!res.ok) {
-            const message = `An error has occured: ${res.status} - ${res.statusText}`;
-            throw new Error(message);
-        }
-        return await res.json();
-    } catch (err) {
-        throw new Error(err.message)
+    const res = await fetch(url);
+    if (!res.ok) {
+        const message = `An error has occurred: ${res.status} - ${res.statusText}`;
+        throw new Error(message);
     }
+    return await res.json();
 }

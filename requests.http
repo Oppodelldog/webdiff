@@ -1,5 +1,9 @@
 ### list sessions
-GET http://localhost:12345/rest/session
+GET http://localhost:12345/rest/sessions
+Accept: application/json
+
+### list session urls
+GET http://localhost:12345/rest/session/test-1/urls
 Accept: application/json
 
 ### list files

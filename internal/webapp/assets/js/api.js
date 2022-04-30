@@ -1,5 +1,6 @@
 const apiBaseUrl = "/rest"
-const apiBaseUrlSessions = apiBaseUrl + "/session"
+const apiBaseUrlSessions = apiBaseUrl + "/sessions"
+const apiBaseUrlSession = apiBaseUrl + "/session"
 const apiBaseUrlFiles = apiBaseUrl + "/files"
 const apiBaseUrlDiff = apiBaseUrl + "/diff"
 const apiBaseUrlDownload = apiBaseUrl + "/download"
@@ -14,6 +15,10 @@ async function getFiles(session) {
 
 async function getDiff(sessionA, idA, sessionB, idB) {
     return await get(apiBaseUrlDiff + `/${sessionA}/${idA}/${sessionB}/${idB}`)
+}
+
+async function getSessionUrls(session) {
+    return await get(apiBaseUrlSession + `/${session}/urls`)
 }
 
 async function enqueueDownload(session, url) {

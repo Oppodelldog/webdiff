@@ -12,7 +12,8 @@ func Router(router *httprouter.Router, downloads chan<- download.Request) {
 		validator = mustCreateValidator()
 	)
 
-	router.GET("/rest/session", SessionHandler())
+	router.GET("/rest/sessions", SessionHandler())
+	router.GET("/rest/session/:session/urls", SessionUrlsHandler())
 	router.GET("/rest/files/", AllFilesHandler())
 	router.GET("/rest/files/:session", FilesBySessionHandler())
 	router.GET("/rest/file/:session/:id", FileHandler())

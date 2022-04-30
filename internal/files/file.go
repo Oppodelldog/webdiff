@@ -30,9 +30,13 @@ func File(session, id string) (*ArchivedFile, error) {
 }
 
 func DownloadedFilePath(session, id string) string {
-	return path.Join(config.DataDir(), session, archiveSubFolder, id)
+	return path.Join(SessionPath(session), archiveSubFolder, id)
 }
 
 func StatusFilePath(session, id string) string {
-	return path.Join(config.DataDir(), session, fmt.Sprintf("%s.json", id))
+	return path.Join(SessionPath(session), fmt.Sprintf("%s.json", id))
+}
+
+func SessionPath(session string) string {
+	return path.Join(config.DataDir(), session)
 }

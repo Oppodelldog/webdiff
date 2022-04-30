@@ -6,31 +6,11 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"time"
+	"webdiff/internal/files"
 )
-
-type pageDownloadStatus struct {
-	Token    string
-	DateTime int64
-	Download string
-	Response pageDownloadResponse
-	Request  pageDownloadRequest
-}
-type pageDownloadResponse struct {
-	StatusCode       int
-	Status           string
-	Header           http.Header
-	ContentLength    int64
-	TransferEncoding []string
-}
-type pageDownloadRequest struct {
-	Method string
-	URL    *url.URL
-	Header http.Header
-}
 
 func Page(token, uri, targetFile, statusFile string) error {
 	err := ensureTargetDir(targetFile)
@@ -75,18 +55,18 @@ func Page(token, uri, targetFile, statusFile string) error {
 		}
 	}()
 
-	err = json.NewEncoder(f).Encode(pageDownloadStatus{
+	err = json.NewEncoder(f).Encode(files.PageDownloadStatus{
 		Token:    token,
 		DateTime: time.Now().UnixNano(),
 		Download: filepath.Base(targetFile),
-		Response: pageDownloadResponse{
+		Response: files.PageDownloadResponse{
 			StatusCode:       resp.StatusCode,
 			Status:           resp.Status,
 			Header:           resp.Header,
 			ContentLength:    resp.ContentLength,
 			TransferEncoding: resp.TransferEncoding,
 		},
-		Request: pageDownloadRequest{
+		Request: files.PageDownloadRequest{
 			Method: resp.Request.Method,
 			URL:    resp.Request.URL,
 			Header: resp.Request.Header,

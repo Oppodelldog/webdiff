@@ -1,3 +1,7 @@
 pre {
     overflow-x: scroll;
 }
+
+.list-group-item {
+    content-visibility: auto;
+}

@@ -63,7 +63,7 @@ Accept: application/json
 
 ### get downloaded file
 
-GET http://localhost:12345/rest/file/test-1/test-request-1
+GET http://localhost:12345/rest/file/session-1/138b5e36ab1f20a4c32298cf02b6304f
 Accept: application/json
 
 ### diff 2 downloaded files

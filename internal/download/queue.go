@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"log"
+	"webdiff/internal/client"
 	"webdiff/internal/files"
 )
 
@@ -28,7 +29,9 @@ func StartQueue() chan<- Request {
 				var statusFile = files.StatusFilePath(request.Session, id)
 				err := Page(request.Token, request.Url, filename, statusFile)
 				if err != nil {
-					log.Printf("error downloading url='%s', session='%s': %v", request.Url, filename, err)
+					var msg = fmt.Sprintf("error downloading url='%s', session='%s': %v", request.Url, filename, err)
+					log.Print(msg)
+					client.Log(msg, "ERROR")
 				}
 			}(request)
 		}

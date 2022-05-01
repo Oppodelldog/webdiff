@@ -3,7 +3,6 @@ class ServerLogMessageObserver {
     listeners=[]
     addListener(listener){
         this.listeners.push(listener)
-        console.log(this.listeners)
     }
     removeListener(listener){
         this.listeners.remove(listener)

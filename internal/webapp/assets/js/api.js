@@ -3,6 +3,8 @@ const apiBaseUrlSessions = apiBaseUrl + "/sessions"
 const apiBaseUrlSession = apiBaseUrl + "/session"
 const apiBaseUrlFiles = apiBaseUrl + "/files"
 const apiBaseUrlFile = apiBaseUrl + "/file"
+const apiBaseUrlFilter = apiBaseUrl + "/filter"
+const apiBaseUrlFilters = apiBaseUrl + "/filters"
 const apiBaseUrlDiff = apiBaseUrl + "/diff"
 const apiBaseUrlDownload = apiBaseUrl + "/download"
 
@@ -14,8 +16,25 @@ async function getFiles(session) {
     return await get(apiBaseUrlFiles + "/" + session)
 }
 
-async function getFile(session, id) {
-    return await get(apiBaseUrlFile + "/" + session + "/" + id)
+async function getFile(session, id, filterName) {
+    let query = "";
+    if (filterName.length > 0) {
+        query = `?filter=${filterName}`
+    }
+
+    return await get(apiBaseUrlFile + "/" + session + "/" + id + query)
+}
+
+async function getFilters() {
+    return await get(apiBaseUrlFilters)
+}
+
+async function upsertFilter(name, filter) {
+    return await post(apiBaseUrlFilter, {name, filter})
+}
+
+async function deleteFilter(name) {
+    return await del(apiBaseUrlFilter + "/" + name)
 }
 
 async function getDiff(sessionA, idA, sessionB, idB) {
@@ -51,6 +70,13 @@ async function post(url, data) {
         body: JSON.stringify(data)
     });
 
+    if (response.status === 204) {
+        return
+    }
+
     return response.json();
 }
 
+async function del(url) {
+    await fetch(url, {method: 'DELETE',});
+}

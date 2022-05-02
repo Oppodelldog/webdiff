@@ -1,16 +1,43 @@
 package files
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	"io/ioutil"
+	"log"
 )
-
-const archiveSubFolder = "downloaded"
 
 type ArchivedFile struct {
 	Id      string
 	Session string
 	Content []byte
+}
+
+func FileFiltered(session, id, filterName string) (*ArchivedFile, error) {
+	filters, err := Filters()
+	if err != nil {
+		return nil, fmt.Errorf("filters not accessible")
+	}
+
+	file, err := File(session, id)
+	if err != nil {
+		return nil, fmt.Errorf("file not found: %v", err)
+	}
+
+	if len(filterName) > 0 {
+		filter := filters.ByName(filterName)
+		if filter == nil {
+			return nil, fmt.Errorf("filter not found")
+		}
+
+		err = FileFilter(file, filter.Filter)
+		if filter == nil {
+			return nil, fmt.Errorf("error in filter: %v", err)
+		}
+	}
+
+	return file, nil
 }
 
 func File(session, id string) (*ArchivedFile, error) {
@@ -25,4 +52,27 @@ func File(session, id string) (*ArchivedFile, error) {
 		Session: session,
 		Content: content,
 	}, nil
+}
+
+func FileFilter(file *ArchivedFile, filter string) error {
+	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(file.Content))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var newContent = bytes.NewBuffer(nil)
+	doc.Find(filter).Each(func(i int, selection *goquery.Selection) {
+		html, err := goquery.OuterHtml(selection)
+		if err != nil {
+			fmt.Printf("error selecting html: %v\n", err)
+		}
+		newContent.WriteString(html)
+	})
+	if err != nil {
+		return fmt.Errorf("cannot filter: %v", err)
+	}
+
+	file.Content = newContent.Bytes()
+
+	return nil
 }

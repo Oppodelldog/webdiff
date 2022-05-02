@@ -1,33 +1,62 @@
 const componentBrowse = {
     template: `
-      <div class="row">
-        <h3>Browse</h3>
-        <div class="row">
+<div class="row">
+    <h3>Browse</h3>
+    <div class="row">
         <div class="col-3">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-dark" aria-current="true">
+                    Options
+                </li>
+                <li class="list-group-item">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="applySelectedFilter" @change="loadFileContent()" id="chkAutoApplyFilter">
+                        <label class="form-check-label" for="chkAutoApplyFilter">
+                            apply filter ({{selectedFilterName}}) to selected file
+                        </label>
+                    </div>
+                </li>
+            </ul>
             <ul class="list-group">
                 <span v-for="(files,sessionName) in groupedFiles">
                     <li class="list-group-item list-group-item-dark" aria-current="true">
                         <h5>{{sessionName}}</h5>
                     </li>
-                    <li v-for="file in files" class="list-group-item"  v-bind:class="{ active: isItemActive(sessionName,file) }" @click="selectItem(sessionName,file)">{{file}}</li>
+                    <li v-for="file in files" class="list-group-item"
+                        v-bind:class="{ active: isItemActive(sessionName,file) }" @click="selectItem(sessionName,file)">{{file}}</li>
                 </span>
-            </ul>   
+            </ul>
         </div>
         <div class="col-9">
-        <pre>
-            {{fileContent}}
-        </pre>
+            <div class="row">
+                <filters 
+                    v-model="selectedFilterName"
+                    @change="loadFileContent()" 
+                    @saved="loadFileContent()"
+                    @deleted="loadFileContent()"
+                />
+                <div class="row mt-3">
+                    <strong>Content</strong>
+                    <pre>
+        
+    {{fileContent}}
+
+                    </pre>
+                </div>
+            </div>
         </div>
-        </div>
-      </div>`,
+    </div>
+</div>`,
     data() {
         return {
             groupedFiles: [],
+            applySelectedFilter: false,
+            selectedFilterName: "",
             selectedItem: {
                 session: "",
                 file: "",
             },
-            fileContent: "",
+            fileContent: "<-- select a file to load",
         }
     },
     methods: {
@@ -40,8 +69,17 @@ const componentBrowse = {
             return this.selectedItem.session === sessionName && this.selectedItem.file === file;
         },
         async loadFileContent() {
-            let data = await getFile(this.selectedItem.session, this.selectedItem.file)
-            this.fileContent = this.b64_to_utf8(data.content);
+            const filterName = (this.applySelectedFilter) ? this.selectedFilterName : "";
+
+            if (this.selectedItem.session !== "" && this.selectedItem.file !== "") {
+                let data = await getFile(this.selectedItem.session, this.selectedItem.file, filterName)
+                if (data.content === null || data.content.length === 0) {
+                    this.fileContent = ""
+                } else {
+                    this.fileContent = this.b64_to_utf8(data.content);
+                }
+
+            }
         },
         b64_to_utf8(str) {
             return decodeURIComponent(escape(window.atob(str)));

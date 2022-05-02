@@ -20,6 +20,9 @@ func Router(router *httprouter.Router, downloads chan<- download.Request, hub *w
 	router.GET("/rest/files/:session", FilesBySessionHandler())
 	router.GET("/rest/file/:session/:id", FileHandler())
 	router.GET("/rest/diff/:sessionA/:idA/:sessionB/:idB", DiffHandler())
+	router.GET("/rest/filters", allFiltersHandler())
+	router.POST("/rest/filter", upsertFilterHandler())
+	router.DELETE("/rest/filter/:name", deleteFilterHandler())
 	router.POST("/rest/download", downloadHandler(validator, downloads))
 
 	router.GET("/ws", websocketHandler(hub))

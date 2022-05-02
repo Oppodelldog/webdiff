@@ -11,13 +11,14 @@ import (
 func FileHandler() httprouter.Handle {
 	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 		var (
-			id      = sanitizeFilename(params.ByName("id"))
-			session = sanitizeFilename(params.ByName("session"))
+			id         = sanitizeFilename(params.ByName("id"))
+			session    = sanitizeFilename(params.ByName("session"))
+			filterName = request.URL.Query().Get("filter")
 		)
 
-		archivedFile, err := files.File(session, id)
+		archivedFile, err := files.FileFiltered(session, id, filterName)
 		if err != nil {
-			http.Error(writer, fmt.Sprintf("cannot read files"), http.StatusInternalServerError)
+			http.Error(writer, fmt.Sprintf("cannot read file"), http.StatusInternalServerError)
 
 			return
 		}

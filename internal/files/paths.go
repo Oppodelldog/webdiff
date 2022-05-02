@@ -6,6 +6,9 @@ import (
 	"webdiff/internal/config"
 )
 
+const archiveSubFolder = "downloaded"
+const filtersFile = "filters.json"
+
 func DownloadedFilePath(session, id string) string {
 	return path.Join(DownloadedDirPath(session), id)
 }
@@ -18,5 +21,13 @@ func StatusFilePath(session, id string) string {
 }
 
 func SessionPath(session string) string {
-	return path.Join(config.DataDir(), session)
+	return path.Join(DataDir(), session)
+}
+
+func FiltersFile() string {
+	return path.Join(DataDir(), filtersFile)
+}
+
+func DataDir() string {
+	return config.DataDir()
 }

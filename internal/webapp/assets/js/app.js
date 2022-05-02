@@ -2,7 +2,7 @@ const Home = {template: '<home/>'}
 const Diff = {template: '<diff/>'}
 const Download = {template: '<download/>'}
 const Browse = {template: '<browse/>'}
-const ServerLog = {template: '<serverlog/>'}
+
 
 const routes = [
     {path: '/', component: Home},
@@ -23,6 +23,7 @@ app.component('download', componentDownload);
 app.component('home', componentHome);
 app.component('browse', componentBrowse);
 app.component('serverlog', componentServerLog);
+app.component('filters', componentFilters);
 
 app.use(router)
 app.mount('#app')

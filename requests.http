@@ -16,6 +16,33 @@ Accept: application/json
 GET http://localhost:12345/rest/files/test-2
 Accept: application/json
 
+### get downloaded file
+
+GET http://localhost:12345/rest/file/session-1/138b5e36ab1f20a4c32298cf02b6304f?filter=Test-Filter
+Accept: application/json
+
+### diff 2 downloaded files
+
+GET http://localhost:12345/rest/diff/test-1/test-request-1/test-2/test-request-1
+Accept: application/json
+
+### filters list
+GET http://localhost:12345/rest/filters
+Accept: application/json
+
+### add/update new filter
+POST http://localhost:12345/rest/filter
+Accept: application/json
+
+{
+"name":"Test-Filter2",
+"filter":"a filter...1"
+}
+
+### delete new filter
+DELETE http://localhost:12345/rest/filter/Test-Filter2
+
+
 ### enqueue download
 
 POST http://localhost:12345/rest/download
@@ -61,18 +88,6 @@ Accept: application/json
 }
 
 
-### get downloaded file
-
-GET http://localhost:12345/rest/file/session-1/138b5e36ab1f20a4c32298cf02b6304f
-Accept: application/json
-
-### diff 2 downloaded files
-
-GET http://localhost:12345/rest/diff/test-1/test-request-1/test-2/test-request-1
-Accept: application/json
-
-###
-
 ### index.html
 
 GET http://localhost:12345/webapp
@@ -81,5 +96,3 @@ Accept: application/json
 ### asset
 GET http://localhost:12345/webapp/assets/css/app.css
 Accept: application/json
-
-###

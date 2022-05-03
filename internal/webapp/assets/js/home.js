@@ -11,6 +11,9 @@ const componentHome = {
         <p><strong>Diff</strong><br/>
         The Diff section then lets you compare files from your recorded sessions.
         </p>
+        <p><strong>Files &amp; Filters</strong><br/>
+        Browse downloaded files, create and test filters.
+        </p>
       </div>`,
     data() {
         return {}

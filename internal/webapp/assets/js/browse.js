@@ -15,6 +15,12 @@ const componentBrowse = {
                             apply filter ({{selectedFilterName}}) to selected file
                         </label>
                     </div>
+                <div class="form-check">
+                        <input class="form-check-input" type="checkbox" v-model="prettifyHtml" @change="loadFileContent()" id="chPrettifyHtml">
+                        <label class="form-check-label" for="chPrettifyHtml">
+                            prettify html output
+                        </label>
+                    </div>                    
                 </li>
             </ul>
             <ul class="list-group">
@@ -39,7 +45,7 @@ const componentBrowse = {
                     <strong>Content</strong>
                     <pre>
         
-    {{fileContent}}
+{{fileContent}}
 
                     </pre>
                 </div>
@@ -51,6 +57,7 @@ const componentBrowse = {
         return {
             groupedFiles: [],
             applySelectedFilter: false,
+            prettifyHtml: false,
             selectedFilterName: "",
             selectedItem: {
                 session: "",
@@ -72,7 +79,7 @@ const componentBrowse = {
             const filterName = (this.applySelectedFilter) ? this.selectedFilterName : "";
 
             if (this.selectedItem.session !== "" && this.selectedItem.file !== "") {
-                let data = await getFile(this.selectedItem.session, this.selectedItem.file, filterName)
+                let data = await getFile(this.selectedItem.session, this.selectedItem.file, filterName, this.prettifyHtml)
                 if (data.content === null || data.content.length === 0) {
                     this.fileContent = ""
                 } else {

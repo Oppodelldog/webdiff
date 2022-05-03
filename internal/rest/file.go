@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
+	"github.com/yosssi/gohtml"
 	"net/http"
+	"strconv"
 	"webdiff/internal/files"
 )
 
@@ -14,6 +16,7 @@ func FileHandler() httprouter.Handle {
 			id         = sanitizeFilename(params.ByName("id"))
 			session    = sanitizeFilename(params.ByName("session"))
 			filterName = request.URL.Query().Get("filter")
+			pretty     = request.URL.Query().Get("pretty")
 		)
 
 		archivedFile, err := files.FileFiltered(session, id, filterName)
@@ -21,6 +24,10 @@ func FileHandler() httprouter.Handle {
 			http.Error(writer, fmt.Sprintf("cannot read file"), http.StatusInternalServerError)
 
 			return
+		}
+
+		if v, err := strconv.ParseBool(pretty); err == nil && v {
+			archivedFile.Content = gohtml.FormatBytes(archivedFile.Content)
 		}
 
 		type ArchivedFile struct {

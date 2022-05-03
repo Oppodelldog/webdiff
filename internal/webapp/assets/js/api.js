@@ -16,10 +16,10 @@ async function getFiles(session) {
     return await get(apiBaseUrlFiles + "/" + session)
 }
 
-async function getFile(session, id, filterName) {
-    let query = "";
+async function getFile(session, id, filterName, prettify) {
+    let query = "?pretty=" + prettify;
     if (filterName.length > 0) {
-        query = `?filter=${filterName}`
+        query += `&filter=${filterName}`
     }
 
     return await get(apiBaseUrlFile + "/" + session + "/" + id + query)

@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/yosssi/gohtml"
@@ -21,7 +22,12 @@ func FileHandler() httprouter.Handle {
 
 		archivedFile, err := files.FileFiltered(session, id, filterName)
 		if err != nil {
-			http.Error(writer, fmt.Sprintf("cannot read file"), http.StatusInternalServerError)
+			if errors.Is(err, files.ErrFilterNoMatch) {
+				json.NewEncoder(writer).Encode(files.ErrorResponse{Error: err.Error()})
+				return
+			} else {
+				http.Error(writer, fmt.Sprintf("cannot read file"), http.StatusInternalServerError)
+			}
 
 			return
 		}

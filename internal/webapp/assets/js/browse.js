@@ -80,12 +80,14 @@ const componentBrowse = {
 
             if (this.selectedItem.session !== "" && this.selectedItem.file !== "") {
                 let data = await getFile(this.selectedItem.session, this.selectedItem.file, filterName, this.prettifyHtml)
-                if (data.content === null || data.content.length === 0) {
+                if (data.content === null || data.error !== undefined) {
                     this.fileContent = ""
+                    if (data.error !== undefined) {
+                        this.fileContent = data.error;
+                    }
                 } else {
                     this.fileContent = this.b64_to_utf8(data.content);
                 }
-
             }
         },
         b64_to_utf8(str) {

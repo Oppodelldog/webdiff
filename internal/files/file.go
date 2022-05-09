@@ -2,6 +2,7 @@ package files
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"io/ioutil"
@@ -13,6 +14,8 @@ type ArchivedFile struct {
 	Session string
 	Content []byte
 }
+
+var ErrFilterNoMatch = errors.New("filter did not match, filtered result was empty")
 
 func FileFiltered(session, id, filterName string) (*ArchivedFile, error) {
 	filters, err := Filters()
@@ -32,8 +35,8 @@ func FileFiltered(session, id, filterName string) (*ArchivedFile, error) {
 		}
 
 		err = FileFilter(file, filter.Filter)
-		if filter == nil {
-			return nil, fmt.Errorf("error in filter: %v", err)
+		if err != nil {
+			return nil, fmt.Errorf("error in filter: %w", err)
 		}
 	}
 
@@ -61,7 +64,11 @@ func FileFilter(file *ArchivedFile, filter string) error {
 	}
 
 	var newContent = bytes.NewBuffer(nil)
-	doc.Find(filter).Each(func(i int, selection *goquery.Selection) {
+	selection := doc.Find(filter)
+	if selection.Length() == 0 {
+		return ErrFilterNoMatch
+	}
+	selection.Each(func(i int, selection *goquery.Selection) {
 		html, err := goquery.OuterHtml(selection)
 		if err != nil {
 			fmt.Printf("error selecting html: %v\n", err)

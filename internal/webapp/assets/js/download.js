@@ -15,6 +15,14 @@ const componentDownload = {
                 <option v-for="session in sessions" :value="session">{{session}}</option>
             </select>
         </div>
+        <div class="ms-3">
+            <label for="selFileIdStrategy">file id strategy</label>
+            <select id="selFileIdStrategy" v-model="fileIdStrategy" class="form-select"
+                    aria-label="Choose a strategy for creating file ids">
+                <option value="gen:hash_url">Hash from url</option>
+                <option value="gen:hash_path">Hash from path</option>
+            </select>
+        </div>
     </div>
 </div>
 <div class="row mt-3">
@@ -56,6 +64,7 @@ const componentDownload = {
             selectedSession: "",
             downloadSuccess: false,
             downloadFailure: false,
+            fileIdStrategy: "gen:hash_path"
         }
     },
     methods: {
@@ -80,7 +89,7 @@ const componentDownload = {
 
             try {
                 await this.urls.split("\n").forEach((url) => {
-                    enqueueDownload(this.selectedSession, url)
+                    enqueueDownload(this.selectedSession, url, this.fileIdStrategy)
                 })
                 this.downloadSuccess = true;
             } catch (e) {

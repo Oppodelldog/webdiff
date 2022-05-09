@@ -1,7 +1,6 @@
 const componentBrowse = {
     template: `
 <div class="row">
-    <h3>Browse</h3>
     <div class="row">
         <div class="col-3">
             <ul class="list-group">

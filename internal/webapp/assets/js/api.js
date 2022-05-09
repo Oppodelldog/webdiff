@@ -17,12 +17,7 @@ async function getFiles(session) {
 }
 
 async function getFile(session, id, filterName, prettify) {
-    let query = "?pretty=" + prettify;
-    if (filterName.length > 0) {
-        query += `&filter=${filterName}`
-    }
-
-    return await get(apiBaseUrlFile + "/" + session + "/" + id + query)
+    return await get(apiBaseUrlFile + "/" + session + "/" + id + query(prettify, filterName))
 }
 
 async function getFilters() {
@@ -37,8 +32,8 @@ async function deleteFilter(name) {
     return await del(apiBaseUrlFilter + "/" + name)
 }
 
-async function getDiff(sessionA, idA, sessionB, idB) {
-    return await get(apiBaseUrlDiff + `/${sessionA}/${idA}/${sessionB}/${idB}`)
+async function getDiff(sessionA, idA, sessionB, idB, filterName, prettify) {
+    return await get(apiBaseUrlDiff + `/${sessionA}/${idA}/${sessionB}/${idB}${query(prettify, filterName)}`)
 }
 
 async function getSessionUrls(session) {
@@ -79,4 +74,14 @@ async function post(url, data) {
 
 async function del(url) {
     await fetch(url, {method: 'DELETE',});
+}
+
+
+function query(prettify, filterName) {
+    let query = "?pretty=" + prettify;
+    if (filterName != null && filterName.length > 0) {
+        query += `&filter=${filterName}`
+    }
+
+    return query
 }

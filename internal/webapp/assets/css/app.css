@@ -5,3 +5,7 @@ pre {
 .list-group-item {
     content-visibility: auto;
 }
+
+.router-link-active {
+    font-weight: bold;
+}

@@ -16,7 +16,24 @@ const router = VueRouter.createRouter({
     routes,
 })
 
-const app = Vue.createApp({});
+const app = Vue.createApp({
+    data() {
+        return {
+            downloadQueueNum: 0,
+        }
+    },
+    methods: {
+        newDownloadQueueData(data) {
+            this.downloadQueueNum = data.queue
+        }
+    },
+    async mounted() {
+        DownloadQueueObserver.addListener(this.newDownloadQueueData)
+    },
+    unmounted() {
+        DownloadQueueObserver.removeListener(this.newDownloadQueueData)
+    }
+});
 
 app.component('diff', componentDiff);
 app.component('download', componentDownload);

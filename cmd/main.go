@@ -12,8 +12,8 @@ import (
 
 func main() {
 	var r = httprouter.New()
-	var downloads = download.StartQueue()
 	var hub = client.StartWebsocketHub()
+	var downloads = download.StartQueue()
 
 	rest.Router(r, downloads, hub)
 	webapp.Handler(r)

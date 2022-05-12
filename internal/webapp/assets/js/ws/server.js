@@ -1,18 +1,23 @@
+class DataObserver {
+    listeners = []
 
-class ServerLogMessageObserver {
-    listeners=[]
-    addListener(listener){
+    addListener(listener) {
         this.listeners.push(listener)
     }
-    removeListener(listener){
+
+    removeListener(listener) {
         this.listeners.remove(listener)
     }
-    notify(message){
-        this.listeners.forEach((l)=>l(message))
+
+    notify(message) {
+        this.listeners.forEach((l) => {
+            l(message);
+        })
     }
 }
 
-const ServerLogObserver = new ServerLogMessageObserver();
+const ServerLogObserver = new DataObserver();
+const DownloadQueueObserver = new DataObserver();
 
 function connectWebsocket(wsUrl) {
     let ws = new WebSocket(wsUrl)
@@ -29,7 +34,8 @@ function connectWebsocket(wsUrl) {
             }
             const message = messages[k]
             const data = JSON.parse(message)
-            ServerLogObserver.notify(data)
+            if (data.message != null) ServerLogObserver.notify(data)
+            if (data.queue != null) DownloadQueueObserver.notify(data)
         }
         ws.onclose = function (evt) {
             console.log("closed channel")

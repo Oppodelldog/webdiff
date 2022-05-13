@@ -24,6 +24,14 @@ const componentFilters = {
                 </div>
 
                 <div class="input-group mt-3">
+                <span class="input-group-text">Type</span>
+                  <select class="form-select" aria-label="Default filter type" v-model="selectedFilterType">
+                        <option disabled value="">Select a filter type</option>
+                        <option v-for="filterType in filterTypes" :value="filterType.id">{{filterType.name}}</option>
+                    </select>
+                </div>
+                <div class="input-group mt-3">
+                    <span class="input-group-text">Definition</span>
                     <input type="text" class="form-control" placeholder="Filter" aria-label="Filter"
                            v-model="selectedFilterFilter">
                 </div>
@@ -43,6 +51,8 @@ const componentFilters = {
             filters: [],
             selectedFilterName: this.modelValue,
             selectedFilterFilter: "",
+            filterTypes: [{id: "css", name: "css selector"}],
+            selectedFilterType: "",
         }
     },
     props: {
@@ -53,7 +63,7 @@ const componentFilters = {
     },
     methods: {
         async saveFilter() {
-            await upsertFilter(this.selectedFilterName, this.selectedFilterFilter)
+            await upsertFilter(this.selectedFilterName, this.selectedFilterFilter, this.selectedFilterType)
             await this.loadFilters();
             this.notify()
             this.$emit('saved');
@@ -72,7 +82,8 @@ const componentFilters = {
         filterSelected() {
             for (let i = 0; i < this.filters.length; i++) {
                 if (this.filters[i].name === this.selectedFilterName) {
-                    this.selectedFilterFilter = this.filters[i].filter;
+                    this.selectedFilterFilter = this.filters[i].def;
+                    this.selectedFilterType = this.filters[i].type;
                     this.notify();
                     return;
                 }

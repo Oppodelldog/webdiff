@@ -22,10 +22,11 @@ func FileHandler() httprouter.Handle {
 
 		archivedFile, err := files.FileFiltered(session, id, filterName)
 		if err != nil {
-			if errors.Is(err, files.ErrFilterNoMatch) {
+			if errors.Is(err, files.ErrFilterNoMatch) || errors.Is(err, files.ErrFilterInvalid) || errors.Is(err, files.ErrParsingFailed) {
 				json.NewEncoder(writer).Encode(files.ErrorResponse{Error: err.Error()})
 				return
 			} else {
+				fmt.Println(err)
 				http.Error(writer, fmt.Sprintf("cannot read file"), http.StatusInternalServerError)
 			}
 

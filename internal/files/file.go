@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
+	"github.com/andybalholm/cascadia"
+	"golang.org/x/net/html"
 	"io/ioutil"
-	"log"
 )
+
+const filterTypeCSS = "css"
 
 type ArchivedFile struct {
 	Id      string
@@ -16,6 +18,8 @@ type ArchivedFile struct {
 }
 
 var ErrFilterNoMatch = errors.New("filter did not match, filtered result was empty")
+var ErrFilterInvalid = errors.New("filter is not valid")
+var ErrParsingFailed = errors.New("parsing failed")
 
 func FileFiltered(session, id, filterName string) (*ArchivedFile, error) {
 	filters, err := Filters()
@@ -34,7 +38,7 @@ func FileFiltered(session, id, filterName string) (*ArchivedFile, error) {
 			return nil, fmt.Errorf("filter not found")
 		}
 
-		err = FileFilter(file, filter.Filter)
+		err = FileFilter(file, filter.Def, filter.Type)
 		if err != nil {
 			return nil, fmt.Errorf("error in filter: %w", err)
 		}
@@ -57,29 +61,40 @@ func File(session, id string) (*ArchivedFile, error) {
 	}, nil
 }
 
-func FileFilter(file *ArchivedFile, filter string) error {
-	doc, err := goquery.NewDocumentFromReader(bytes.NewBuffer(file.Content))
+func FileFilter(file *ArchivedFile, filter, filterType string) error {
+	var err error
+
+	switch filterType {
+	case filterTypeCSS:
+		file.Content, err = filterCSS(file.Content, filter)
+	}
+
+	return err
+}
+
+func filterCSS(content []byte, selector string) ([]byte, error) {
+	s, err := cascadia.Compile(selector)
 	if err != nil {
-		log.Fatal(err)
+		return nil, fmt.Errorf("%w: %v", ErrFilterInvalid, err)
+	}
+
+	doc, err := html.Parse(bytes.NewBuffer(content))
+	if err != nil {
+		return nil, fmt.Errorf("%w: %v", ErrParsingFailed, err)
 	}
 
 	var newContent = bytes.NewBuffer(nil)
-	selection := doc.Find(filter)
-	if selection.Length() == 0 {
-		return ErrFilterNoMatch
+
+	nodes := s.MatchAll(doc)
+	if len(nodes) == 0 {
+		return nil, ErrFilterNoMatch
 	}
-	selection.Each(func(i int, selection *goquery.Selection) {
-		html, err := goquery.OuterHtml(selection)
-		if err != nil {
-			fmt.Printf("error selecting html: %v\n", err)
+
+	for _, node := range nodes {
+		if err := html.Render(newContent, node); err != nil {
+			return nil, err
 		}
-		newContent.WriteString(html)
-	})
-	if err != nil {
-		return fmt.Errorf("cannot filter: %v", err)
 	}
 
-	file.Content = newContent.Bytes()
-
-	return nil
+	return newContent.Bytes(), nil
 }

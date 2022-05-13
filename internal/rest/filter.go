@@ -9,8 +9,9 @@ import (
 )
 
 type Filter struct {
-	Name   string `json:"name"`
-	Filter string `json:"filter"`
+	Name string `json:"name"`
+	Def  string `json:"def"`
+	Type string `json:"type"`
 }
 type FilterList struct {
 	Filters []Filter `json:"filters"`
@@ -33,14 +34,9 @@ func allFiltersHandler() httprouter.Handle {
 	}
 }
 
-type NewFilter struct {
-	Name   string `json:"name"`
-	Filter string `json:"filter"`
-}
-
 func upsertFilterHandler() httprouter.Handle {
 	return func(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-		var newFilter NewFilter
+		var newFilter Filter
 		err := json.NewDecoder(request.Body).Decode(&newFilter)
 		if err != nil {
 			http.Error(writer, "cannot read request", http.StatusBadRequest)
@@ -48,7 +44,7 @@ func upsertFilterHandler() httprouter.Handle {
 			return
 		}
 
-		err = files.NewFilter(newFilter.Name, newFilter.Filter)
+		err = files.NewFilter(newFilter.Name, newFilter.Def, newFilter.Type)
 		if err != nil {
 			http.Error(writer, "cannot add filter", http.StatusInternalServerError)
 

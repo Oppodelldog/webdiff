@@ -8,8 +8,9 @@ import (
 )
 
 type Filter struct {
-	Name   string
-	Filter string
+	Name string
+	Def  string
+	Type string
 }
 type FilterList struct {
 	Filters []Filter
@@ -42,15 +43,16 @@ func Filters() (*FilterList, error) {
 	return list, nil
 }
 
-func NewFilter(name, filter string) error {
+func NewFilter(name, filter, filterType string) error {
 	list, err := loadFilterList()
 	if err != nil {
 		return err
 	}
 
 	f := Filter{
-		Name:   name,
-		Filter: filter,
+		Name: name,
+		Def:  filter,
+		Type: filterType,
 	}
 
 	if idx := list.IndexByName(name); idx > -1 {

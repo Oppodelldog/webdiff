@@ -24,8 +24,8 @@ async function getFilters() {
     return await get(apiBaseUrlFilters)
 }
 
-async function upsertFilter(name, filter) {
-    return await post(apiBaseUrlFilter, {name, filter})
+async function upsertFilter(name, def, type) {
+    return await post(apiBaseUrlFilter, {name, def, type})
 }
 
 async function deleteFilter(name) {

@@ -22,7 +22,7 @@ func FileHandler() httprouter.Handle {
 
 		archivedFile, err := files.FileFiltered(session, id, filterName)
 		if err != nil {
-			if errors.Is(err, files.ErrFilterNoMatch) || errors.Is(err, files.ErrFilterInvalid) || errors.Is(err, files.ErrParsingFailed) {
+			if isFilterErr(err) {
 				json.NewEncoder(writer).Encode(files.ErrorResponse{Error: err.Error()})
 				return
 			} else {
@@ -45,4 +45,11 @@ func FileHandler() httprouter.Handle {
 
 		json.NewEncoder(writer).Encode(ArchivedFile(*archivedFile))
 	}
+}
+
+func isFilterErr(err error) bool {
+	return errors.Is(err, files.ErrFilterNoMatch) ||
+		errors.Is(err, files.ErrFilterInvalid) ||
+		errors.Is(err, files.ErrParsingFailed) ||
+		errors.Is(err, files.ErrUnknownFilterType)
 }

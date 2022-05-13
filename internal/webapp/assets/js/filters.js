@@ -51,8 +51,14 @@ const componentFilters = {
             filters: [],
             selectedFilterName: this.modelValue,
             selectedFilterFilter: "",
-            filterTypes: [{id: "css", name: "css selector"}],
+            filterTypes: [
+                {id: "css", name: "css selector"},
+                {id: "htmlxpath", name: "html xpath selector"},
+                {id: "xmlxpath", name: "xml xpath selector"},
+                {id: "jsonxpath", name: "json xpath selector"},
+            ],
             selectedFilterType: "",
+
         }
     },
     props: {

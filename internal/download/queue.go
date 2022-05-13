@@ -23,7 +23,7 @@ func StartQueue() chan<- Request {
 	go func() {
 		for request := range requests {
 			var id = request.Id
-			time.Sleep(1 * time.Second)
+
 			requestUrl, err := url.Parse(request.Url)
 			if err != nil {
 				var msg = fmt.Sprintf("error downloading url='%s': %v", request.Url, err)

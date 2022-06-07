@@ -19,6 +19,7 @@ const componentDownload = {
             <label for="selFileIdStrategy">file id strategy</label>
             <select id="selFileIdStrategy" v-model="fileIdStrategy" class="form-select"
                     aria-label="Choose a strategy for creating file ids">
+                <option value="pipe">Pipe separated</option>                    
                 <option value="gen:hash_url">Hash from url</option>
                 <option value="gen:hash_path">Hash from path</option>
             </select>
@@ -40,6 +41,7 @@ const componentDownload = {
         </button>
     </div>
     <div class="col">
+    <span v-if="hasErrors()" class="badge bg-danger">{{errorMessage}}</span>
     </div>
     <div class="col-auto">
         <button type="button" class="btn btn-primary" @click="download()">Download</button>
@@ -64,7 +66,9 @@ const componentDownload = {
             selectedSession: "",
             downloadSuccess: false,
             downloadFailure: false,
-            fileIdStrategy: "gen:hash_path"
+            fileIdStrategy: "pipe",
+            errorMessage: "",
+            idUrlSeparator: "|",
         }
     },
     methods: {
@@ -82,20 +86,59 @@ const componentDownload = {
             return true;
         },
         async download() {
-            if (this.selectedSession.length === 0) return;
-            if (this.urls.length === 0) return;
+            if (this.selectedSession.length === 0) {
+                this.setErrorMessage(`session is not defined`)
+                return;
+            }
+            if (this.urls.length === 0) {
+                this.setErrorMessage(`url list empty`)
+                return;
+            }
             this.downloadSuccess = false;
             this.downloadFailure = false;
+            this.setErrorMessage(``)
+            if (this.fileIdStrategy === "pipe") {
+                this.validateIds();
+                if (this.hasErrors()) {
+                    return;
+                }
+            }
 
             try {
-                await this.urls.split("\n").forEach((url) => {
-                    enqueueDownload(this.selectedSession, url, this.fileIdStrategy)
+                await this.prepareUrls().forEach((url) => {
+                    enqueueDownload(this.selectedSession, url[1], url[0])
                 })
                 this.downloadSuccess = true;
             } catch (e) {
                 this.downloadFailure = true;
             }
         },
+        hasErrors() {
+            return this.errorMessage.length > 0;
+        },
+        validateIds() {
+            this.urls.split("\n").forEach((url, key) => {
+                const parts = url.split(this.idUrlSeparator);
+                if (parts.length !== 2) {
+                    this.setErrorMessage(`line number ${key + 1} is not properly formatted, expected "id|url"`)
+                }
+            })
+        },
+        prepareUrls() {
+            const urls = [];
+            this.urls.split("\n").forEach((url, key) => {
+                if (this.fileIdStrategy === "pipe") {
+                    const parts = url.split(this.idUrlSeparator);
+                    urls.push([parts[0], parts[1]])
+                } else {
+                    urls.push([this.fileIdStrategy, url])
+                }
+            })
+            return urls;
+        },
+        setErrorMessage(s) {
+            this.errorMessage = s
+        }
     },
     async mounted() {
         this.setSessions(await getSessions())

@@ -40,11 +40,11 @@ async function getSessionUrls(session) {
     return await get(apiBaseUrlSession + `/${session}/urls`)
 }
 
-async function enqueueDownload(session, url, fileIdStrategy) {
+async function enqueueDownload(session, url, fileId) {
     await post(apiBaseUrlDownload, {
         url: url,
         session: session,
-        id: fileIdStrategy
+        id: fileId
     })
 }
 

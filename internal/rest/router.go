@@ -1,12 +1,12 @@
 package rest
 
 import (
+	"github.com/Oppodelldog/webdiff/internal/download"
+	"github.com/Oppodelldog/webdiff/pkg/ws"
 	"github.com/guiferpa/gody/v2"
 	"github.com/guiferpa/gody/v2/rule"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"webdiff/internal/download"
-	"webdiff/pkg/ws"
 )
 
 func Router(router *httprouter.Router, downloads chan<- download.Request, hub *ws.Hub) {

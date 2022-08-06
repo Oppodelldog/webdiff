@@ -3,10 +3,10 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/files"
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	"webdiff/internal/files"
 )
 
 func AllFilesHandler() httprouter.Handle {

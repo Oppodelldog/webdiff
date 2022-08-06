@@ -3,7 +3,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
-	"webdiff/pkg/ws"
+	"github.com/Oppodelldog/webdiff/pkg/ws"
 )
 
 type LogMessage struct {

@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/client"
+	"github.com/Oppodelldog/webdiff/internal/download"
+	"github.com/Oppodelldog/webdiff/internal/rest"
+	"github.com/Oppodelldog/webdiff/internal/webapp"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"webdiff/internal/client"
-	"webdiff/internal/download"
-	"webdiff/internal/rest"
-	"webdiff/internal/webapp"
 )
 
 func main() {

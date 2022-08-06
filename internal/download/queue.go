@@ -3,11 +3,11 @@ package download
 import (
 	"crypto/md5"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/client"
+	"github.com/Oppodelldog/webdiff/internal/files"
 	"log"
 	"net/url"
 	"time"
-	"webdiff/internal/client"
-	"webdiff/internal/files"
 )
 
 type Request struct {

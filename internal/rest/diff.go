@@ -3,13 +3,13 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/files"
 	"github.com/google/go-cmp/cmp"
 	"github.com/julienschmidt/httprouter"
 	"github.com/yosssi/gohtml"
 	"log"
 	"net/http"
 	"strconv"
-	"webdiff/internal/files"
 )
 
 type DiffResult struct {

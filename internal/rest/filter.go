@@ -3,9 +3,9 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/files"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"webdiff/internal/files"
 )
 
 type Filter struct {

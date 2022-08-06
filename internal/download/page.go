@@ -3,13 +3,13 @@ package download
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/files"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
-	"webdiff/internal/files"
 )
 
 func Page(token, uri, targetFile, statusFile string) error {

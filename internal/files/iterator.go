@@ -3,11 +3,11 @@ package files
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/config"
 	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
-	"webdiff/internal/config"
 )
 
 func IterateDownloadedFiles(session string, processDownloadedFile func(FileEntry) error) error {

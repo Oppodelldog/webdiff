@@ -3,12 +3,12 @@ package rest
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/download"
 	"github.com/google/uuid"
 	"github.com/guiferpa/gody/v2"
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	"webdiff/internal/download"
 )
 
 type DownloadRequest struct {

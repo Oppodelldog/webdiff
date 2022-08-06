@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/files"
 	"github.com/julienschmidt/httprouter"
 	"github.com/yosssi/gohtml"
 	"net/http"
 	"strconv"
-	"webdiff/internal/files"
 )
 
 func FileHandler() httprouter.Handle {

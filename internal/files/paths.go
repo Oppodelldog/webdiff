@@ -2,8 +2,8 @@ package files
 
 import (
 	"fmt"
+	"github.com/Oppodelldog/webdiff/internal/config"
 	"path"
-	"webdiff/internal/config"
 )
 
 const archiveSubFolder = "downloaded"

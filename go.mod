@@ -1,4 +1,4 @@
-module webdiff
+module github.com/Oppodelldog/webdiff
 
 go 1.18
 
